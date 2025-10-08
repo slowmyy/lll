@@ -6,10 +6,23 @@ export function useAuthRedirect() {
   const router = useRouter();
   const segments = useSegments();
   const [isLoading, setIsLoading] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    checkAuthAndRedirect();
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
+    checkAuthAndRedirect();
+  }, [isReady]);
 
   const checkAuthAndRedirect = async () => {
     try {
@@ -19,22 +32,20 @@ export function useAuthRedirect() {
       console.log('🔍 Auth check:', {
         isAuthenticated,
         inAuthGroup,
-        segments: segments.join('/')
+        segments: segments.join('/'),
+        isReady
       });
 
       if (!isAuthenticated && !inAuthGroup) {
-        // Pas connecté et pas sur la page de connexion -> rediriger vers login
         console.log('➡️ Redirection vers login');
-        router.replace('/auth/login');
+        setTimeout(() => router.replace('/auth/login'), 100);
       } else if (isAuthenticated && inAuthGroup) {
-        // Connecté mais sur la page de connexion -> rediriger vers l'app
         console.log('➡️ Redirection vers app');
-        router.replace('/(tabs)');
+        setTimeout(() => router.replace('/(tabs)'), 100);
       }
     } catch (error) {
       console.error('❌ Erreur auth redirect:', error);
-      // En cas d'erreur, rediriger vers login par sécurité
-      router.replace('/auth/login');
+      setTimeout(() => router.replace('/auth/login'), 100);
     } finally {
       setIsLoading(false);
     }
