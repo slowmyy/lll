@@ -6,9 +6,21 @@
   "scripts": {
     "dev": "expo start --tunnel",
     "start": "expo start --tunnel",
+    "start:clean": "npm run clean:cache && expo start --clear --tunnel",
+    "start:local": "expo start --localhost",
+    "start:lan": "expo start",
     "tunnel": "expo start --tunnel",
     "build:web": "expo export --platform web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "clean": "rm -rf node_modules package-lock.json && npm install",
+    "clean:cache": "rm -rf node_modules/.cache .expo .metro",
+    "check:port": "lsof -i :8081 || echo 'Port 8081 is free'",
+    "free:port": "node free-port-8081.js",
+    "check:versions": "node -v && npm -v && npx expo --version",
+    "check:env": "node check-env.js",
+    "check:health": "node health-check.js",
+    "doctor": "npx expo-doctor",
+    "prestart": "node check-env.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -60,5 +72,9 @@
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.11",
     "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=20.19.4",
+    "npm": ">=10.0.0"
   }
 }
