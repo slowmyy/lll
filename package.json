@@ -19,8 +19,7 @@
     "check:versions": "node -v && npm -v && npx expo --version",
     "check:env": "node check-env.js",
     "check:health": "node health-check.js",
-    "doctor": "npx expo-doctor",
-    "prestart": "node check-env.js"
+    "doctor": "npx expo-doctor"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
