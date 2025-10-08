@@ -1,19 +1,12 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
-import LoadingScreen from '@/components/LoadingScreen';
-import '../global.css';
 
 export default function RootLayout() {
   useFrameworkReady();
-  const { isLoading } = useAuthRedirect();
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+  useAuthRedirect();
 
   return (
     <>

@@ -6,23 +6,10 @@ export function useAuthRedirect() {
   const router = useRouter();
   const segments = useSegments();
   const [isLoading, setIsLoading] = useState(true);
-  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isReady) {
-      return;
-    }
-
     checkAuthAndRedirect();
-  }, [isReady]);
+  }, []);
 
   const checkAuthAndRedirect = async () => {
     try {
@@ -32,20 +19,22 @@ export function useAuthRedirect() {
       console.log('🔍 Auth check:', {
         isAuthenticated,
         inAuthGroup,
-        segments: segments.join('/'),
-        isReady
+        segments: segments.join('/')
       });
 
       if (!isAuthenticated && !inAuthGroup) {
+        // Pas connecté et pas sur la page de connexion -> rediriger vers login
         console.log('➡️ Redirection vers login');
-        setTimeout(() => router.replace('/auth/login'), 100);
+        router.replace('/auth/login');
       } else if (isAuthenticated && inAuthGroup) {
+        // Connecté mais sur la page de connexion -> rediriger vers l'app
         console.log('➡️ Redirection vers app');
-        setTimeout(() => router.replace('/(tabs)'), 100);
+        router.replace('/(tabs)');
       }
     } catch (error) {
       console.error('❌ Erreur auth redirect:', error);
-      setTimeout(() => router.replace('/auth/login'), 100);
+      // En cas d'erreur, rediriger vers login par sécurité
+      router.replace('/auth/login');
     } finally {
       setIsLoading(false);
     }
